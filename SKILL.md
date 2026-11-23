@@ -6,9 +6,23 @@
 
 The method is domain-free. Everything domain-specific lives in a **deployment pack**: what counts as a Key, the layer vocabulary, the store root, the tag vocabulary, a typed lay↔technical thesaurus, and a house-terms register. A law firm and a logistics firm run the same procedure with different packs.
 
+## Custody of the map — the user's copy comes first
+
+**A copy of the map must be kept in the user's own custody. This is a standing rule of the method, not a deployment preference. It must be stated to the user explicitly — highlighted, never buried — before the first build, and again whenever custody changes.**
+
+The map is the user's second brain in miniature: for every source an abstract, its Keys and a pointer, in one small file set. Where that file set lives is a custody decision about the user's own information. The default is the user's own machine, or storage under the user's control. The deployment pack records where the user's copy lives, and every build or refresh leaves that copy current — or says plainly why it could not be updated.
+
+The agent's machine (the VM or host the agent runs on) may hold the working copy the skill searches over. A deployment may let the agent's machine be the map's only home **only on the user's express choice, made after the repercussions have been stated to the user plainly:**
+
+- **Loss.** The agent's machine is outside the user's control: it can be replaced, reset, suspended or terminated by whoever operates it, and a map that exists only there goes with it. A copy in the user's custody survives all of that and can always be re-adopted (see Detection & adoption).
+- **Confidentiality.** The map concentrates the store's skeleton — every abstract, identifier, amount and deadline — into a fraction of the space. That concentration is the method's point, and it is exactly why custody matters: whoever holds the only copy holds the shape of the whole store.
+- **Access.** A copy on the agent's machine is reachable only through that agent and that service. The user's own copy is theirs to open, back up, move and keep, with no intermediary.
+
+Until that express choice is recorded in the deployment pack — the choice, its date, and that the repercussions above were stated — a build or refresh that leaves the only copy on the agent's machine is **incomplete**, and the run must say so.
+
 ## Two modes
 
-This skill has two modes. **Build mode** cards sources into a map (see the card spec below); **search mode** runs the procedure over a finished map. Detection comes first, always: search mode checks for an existing map before anything else, and build mode never re-cards what a current map already covers — it refreshes changed sources only. The skill is self-sufficient end to end: a deployment with no upstream indexes at all still has a complete path, because build mode can card primary sources directly. Upstream producers (audit skills, transcript reconcilers, human-maintained hubs) are accelerators that give build mode better raw material; they are never prerequisites. "Indexing" in this skill means carding — abstracting into the map. It never means duplicating text into a database or vector store.
+This skill has two modes. **Build mode** cards sources into a map (see the card spec below); **search mode** runs the procedure over a finished map. Search mode has one visual presentation option, **Shannon 3D** (see its section below): on the trigger "Shannon 3d <subject>" it renders the search traversal for that subject as an interactive 3D graph in HTML, with visible lines between nodes. Detection comes first, always: search mode checks for an existing map before anything else, and build mode never re-cards what a current map already covers — it refreshes changed sources only. The skill is self-sufficient end to end: a deployment with no upstream indexes at all still has a complete path, because build mode can card primary sources directly. Upstream producers (audit skills, transcript reconcilers, human-maintained hubs) are accelerators that give build mode better raw material; they are never prerequisites. "Indexing" in this skill means carding — abstracting into the map. It never means duplicating text into a database or vector store.
 
 ## Step 0 — Derive the frame (before any build, and whenever a deployment starts)
 
@@ -88,12 +102,29 @@ A refresh never rebuilds. Procedure:
 5. **Record the semantic deltas.** Where a deployment keeps a position & delta register (artefact 5), compare each newly carded source against the register's current positions for every holder and axis it touches. Where the source moves a position — or moves the evidential basis under an unmoved position — append a delta record (from → to, direction, what moved, date, pointer to the new card). Where the source's wording differs from a registered position but its basis does not, record nothing and note the rephrase in the run log only. A refresh that finds file deltas but no position deltas says so; the absence of movement is itself a reading, and the trend layer depends on stillness being recorded honestly rather than passed over.
 6. Upstream freshness is inherited, never manufactured: a folder layer whose producer (e.g. an audit) has not re-run simply produces no delta — the refresh must not card around a stale producer to disguise that.
 
+## Shannon 3D — graph view (presentation option, added in v1.5)
+
+Search mode has one visual presentation option: a 3D graph of a subject, in the manner of Obsidian's 3D graph view of a vault — nodes floating in 3D space, joined by **visible lines between nodes**. It is a *view* over the existing map, never a new store: it cards nothing, stores no edges, and writes nothing back into the map. This is the map's standing principle rendered — connections are not stored as edges; they are derived at query time by joining on shared field values. The 3D graph is that derivation, drawn.
+
+**Trigger.** The user says **"Shannon 3d"** (any capitalisation) **followed by a subject** — a matter, a person, a topic, a figure: e.g. `Shannon 3d the Meridian contract`, `Shannon 3d Jane Smith`, `Shannon 3d clause 6`. With no subject, graph the whole map at cluster level only (atlas + cluster summaries as nodes), and say that is what was done. The trigger always means: generate the HTML graph for that subject and hand it over in the reply — not a description of a graph, the file itself.
+
+**Procedure.**
+
+1. **Resolve and probe exactly as search mode does** (house terms → registry resolve → interpret → expand → `map_query.py` probe → traverse). The graph's scope is the traversal result: the resolved subject's cards plus everything joined to them.
+2. **Nodes.** Primary nodes are the in-scope **cards** (one per source). Secondary nodes are the shared values the joins run on: **clusters, entities, holders** (from the position & delta register), and **keys** where a key is shared by two or more cards. Node size scales with degree (how many lines meet there); node colour is by layer for cards and by kind for secondary nodes, with a legend on the page.
+3. **Lines between nodes — the point of the view.** Every line is one derived join, drawn visibly (a rendered line, never an implied or hover-only connection), and typed: `same-cluster` · `shared-key` · `shared-entity` · `shared-tag` · `holder-axis` (a register position/delta link) · `supersedes` (an old card to its refresh card). Hovering or selecting a line shows its type and the exact shared value it rests on. A line that cannot name its shared value is not drawn — no decorative edges, no inferred relationships.
+4. **Granularity guard.** Default scope is the subject plus its 1-hop joins. Extend to 2 hops only while the result stays readable (about 300 nodes); beyond that, collapse to cluster-level nodes and state the collapse on the page. Node and line counts are printed in the page header — a graph that hides its denominator is the visual form of a false index.
+5. **Output — one HTML file.** A single dated HTML file, `views/shannon-3d-<subject-slug>-<yyyymmdd>.html` in the deployment's map directory (created if absent; dated, never overwritten — corrections are additive, as everywhere in this skill). It renders with a 3D force-graph library (3d-force-graph / Three.js): rotate, zoom and pan; hover highlights a node, its neighbours and their lines; clicking a node opens a detail panel carrying that card's title, abstract, Keys, layer, date and **Source pointer** (the drill-down path to the original — the graph never replaces it). A search/filter box and the legend are on the page. If the library CDN is unreachable in the viewing environment, the file must still open and say so plainly rather than render blank.
+6. **Freshness is inherited, never manufactured.** The header states the map's manifest date and, where the subject's upstream producer (e.g. an audit) is stale for in-scope sources, a banner says so — the same rule as Refresh step 6. Never card, re-card or refresh solely to make a graph look current; offer the refresh instead.
+7. **Status of the artefact.** The graph is a finding aid, like the index: it is not evidence of what any source says, it proves no relationship beyond the named shared value on each line, and it is never filed, served or quoted as a record. Say so in the page footer.
+
 ## Deployment pack — what one contains
 
 The method ships without a pack; every deployment writes its own, and a real pack is **private to its owner** — it describes their store, their vocabulary and their frame, and is never published with the method. A pack records:
 
 - **Store root** — where the originals live (the custodian is the owner's own disk or store; the map never holds the text).
 - **Map location** — where the atlas, cluster summaries, cards and probe script live.
+- **Map custody** — where the user's own copy of the map lives (see Custody of the map), and whether the user has expressly chosen agent-machine-only storage: the choice, its date, and that the repercussions were stated.
 - **Registry** — the canonical list the resolve step joins on, and its primary key.
 - **Layers** — the kinds of sources in the store (hubs, indexes, logs, transcripts, records...).
 - **Tags** — the deployment's controlled vocabulary, if any.
@@ -109,6 +140,8 @@ Every search that succeeds through an unexpected word, and every correction from
 
 ## Version history
 
+- **v1.6 — 24 Nov 2026.** Custody of the map: a copy of the map must be kept in the user's own custody, stated to the user explicitly as a standing rule of the method. Agent-machine (VM) storage as the map's only home is permitted only on the user's express choice, after the repercussions — loss, confidentiality, access — have been stated plainly; until that choice is recorded in the deployment pack, a run that leaves the only copy on the agent's machine is incomplete.
+- **v1.5 — 17 Nov 2026.** Shannon 3D: search mode gains a visual presentation option — on the trigger "Shannon 3d <subject>", the search traversal for that subject is rendered as an interactive 3D graph in a single HTML file (Obsidian-style: nodes joined by visible lines, every line one derived join typed by its shared value; click a node for its card abstract and Source pointer). The graph is a view over the map, never a store: it cards nothing, stores no edges, and inherits the map's freshness.
 - **v1.4 — 14 Nov 2026.** Dual propositions per card: every card now stores both readings at the same time — the market proposition and the owner proposition — never either/or. Both fields are mandatory; "no movement under this frame" is recorded expressly rather than omitted, and a divergence between the two readings on one card is preserved as a finding.
 - **v1.3 — 14 Nov 2026.** Step 0 refined: asking is permitted where the user wishes to give an answer, preferably on the system's initiative; answers are weighted at the stated tier, and derivation from the record stays primary.
 - **v1.2 — 14 Nov 2026.** Existing-map adoption: a Shannon map already present is adopted and refreshed, never rebuilt ("adopt it, do not rebuild"). The two mapping criteria — the market criteria and the owner's revealed criteria — are named explicitly in Step 0.

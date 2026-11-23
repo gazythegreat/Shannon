@@ -4,6 +4,45 @@ All notable changes to the Shannon skill, newest first. The same history is
 kept at the foot of SKILL.md; the repository's commit history is the
 line-by-line record.
 
+## v1.6 — 24 Nov 2026
+
+Custody of the map — the user's copy comes first. A new standing rule of the
+method, stated to the user explicitly and highlighted, never buried:
+
+- A copy of the map must be kept in the user's own custody (their own machine
+  or storage under their control). The deployment pack records where that
+  copy lives, and every build or refresh leaves it current — or says plainly
+  why it could not be updated.
+- The agent's machine (a VM or host the agent runs on) may hold the working
+  copy. It may be the map's only home **only on the user's express choice**,
+  made after the repercussions have been stated plainly:
+  - **Loss** — the agent's machine can be replaced, reset, suspended or
+    terminated by whoever operates it; a map that exists only there goes
+    with it.
+  - **Confidentiality** — the map concentrates the store's skeleton (every
+    abstract, identifier, amount and deadline) into a fraction of the
+    space; whoever holds the only copy holds the shape of the whole store.
+  - **Access** — a copy on the agent's machine is reachable only through
+    that agent and that service; the user's own copy needs no intermediary.
+- Until that express choice is recorded in the deployment pack (the choice,
+  its date, and that the repercussions were stated), a build or refresh that
+  leaves the only copy on the agent's machine is incomplete, and the run
+  must say so.
+
+## v1.5 — 17 Nov 2026
+
+Shannon 3D — a visual presentation option for search mode. On the trigger
+"Shannon 3d <subject>", the search traversal for that subject is rendered as
+an interactive 3D graph in a single dated HTML file, in the manner of
+Obsidian's 3D graph view: nodes floating in 3D space joined by visible
+lines, where every line is one derived join typed by the shared value it
+rests on (same-cluster / shared-key / shared-entity / shared-tag /
+holder-axis / supersedes). Clicking a node shows its card abstract, Keys,
+layer, date and Source pointer. The graph is a view over the map, never a
+store: it cards nothing, stores no edges, writes nothing back into the map,
+and inherits the map's freshness (with a banner when an upstream producer
+is stale).
+
 ## v1.4 — 14 Nov 2026
 
 Dual propositions per card. The card spec now requires both readings to be
