@@ -4,6 +4,28 @@ All notable changes to the Shannon skill, newest first. The same history is
 kept at the foot of SKILL.md; the repository's commit history is the
 line-by-line record.
 
+## v1.7 — 24 Nov 2026
+
+Sibling maps — a second map beside the first. A deployment may now hold more
+than one map, and the release distinguishes the two kinds:
+
+- **Copies of one map** (master, mirror, case-local exports) — one master,
+  the rest copies; never merged silently, never treated as rivals.
+- **Sibling maps** — genuinely different maps over overlapping material: a
+  frame-specific or subject-specific map with its own cards, register axes
+  and manifest, built where a new frame would distort the general map if
+  forced into it. The sibling carries the frame; the general map stays
+  frame-neutral.
+
+Rules: every sibling is registered in the deployment pack (location, subject
+or frame, provenance, custody copy — the v1.6 custody rule applies to
+siblings exactly as to the master); search probes the master and every
+registered sibling covering the subject in one pass, with hits labelled by
+map and shared cards never double-counted; cards taken from the master are
+labelled extracts; registers stay separate, and a frame is promoted into the
+master only on the owner's direction, as a recorded promotion, not a merge;
+case-local exports follow the map that covers the subject.
+
 ## v1.6 — 24 Nov 2026
 
 Custody of the map — the user's copy comes first. A new standing rule of the
