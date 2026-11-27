@@ -4,6 +4,12 @@ All notable changes to the Shannon skill, newest first. The same history is
 kept at the foot of SKILL.md; the repository's commit history is the
 line-by-line record.
 
+## v1.9 — 27 Nov 2026
+
+Finding the deployment pack. Earlier versions described what a pack contains and assumed one would be there — the custody choice is recorded "in the deployment pack", siblings are registered "in the deployment pack", a map is looked for "in the location the deployment pack names" — without saying how a pack is found, or what to do when there is none. A pack's name, path and format belong to its owner and cannot be assumed.
+
+- **New paragraph — "Finding the pack"** in the Deployment pack section. A pack is identified by its contents, not its name or location: a file that records a store root, a map location, a registry and the deployment's vocabularies. Look for one where the owner's own notes or instructions point; then beside any map found by signature; then in the store root. Never assume a file name, a path, or that a pack exists. If several are found, ask the owner which governs. If none is found, run unconfigured: use the method's defaults, treat every frame line as PROPOSED, and say in the answer that no pack was found and where you looked.
+
 ## v1.8 — 27 Nov 2026
 
 The map leads; it does not limit. A map result now carries a fixed status, and the search procedure no longer lets the map's shape bound the searches that follow it:
