@@ -4,6 +4,14 @@ All notable changes to the Shannon skill, newest first. The same history is
 kept at the foot of SKILL.md; the repository's commit history is the
 line-by-line record.
 
+## v1.8 — 27 Nov 2026
+
+The map leads; it does not limit. A map result now carries a fixed status, and the search procedure no longer lets the map's shape bound the searches that follow it:
+
+- **New section — "The map leads; it does not limit."** Nothing found is never conclusive and always triggers an independent search; a hit not yet checked in the original is a lead, not a finding; a hit confirmed in the original is conclusive for that fact only; anything a filing, a decision or advice will rely on is searched independently as well, whatever the map returned. Independent searches use terms taken from the question and from the source documents themselves — not only the map's term family, house terms or thesaurus — are not confined to the folders, clusters or keys the map points to, go direct on anything newer than the last refresh, and are never displaced by the map for sources outside the store. An answer that rests on the map says so, and says which status applies.
+- **Step 8 — "Abstain and widen"** replaces "Abstain and fall back": an empty result is not an answer, and the widened search uses terms taken directly from the question alongside the expanded term family.
+- **Step 7** — the drill-down into an original now also triggers when the answer will be relied on in a filing, a decision or advice.
+
 ## v1.7 — 24 Nov 2026
 
 Sibling maps — a second map beside the first. A deployment may now hold more

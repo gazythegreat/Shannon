@@ -60,13 +60,31 @@ Run these steps in order. The intelligence lives here, in the procedure — the 
 4. **Expand.** Turn the schema into the deployment's technical vocabulary using the thesaurus — the *whole family* (striking out / struck out / dismissed / discontinuance / unless order / case terminated), not one guessed term. For public domains the searching model may extend the family from its own knowledge; mark any term so added as unconfirmed.
 5. **Probe the map mechanically.** Order: Keys (exact) → Entities → Abstracts → Answers lines. Abstracts describe outcomes in narrative words, which sit closer to lay vocabulary than procedural labels do. Use `map_query.py` (in the map directory) so the probing is grep, not impression: `map_query.py <terms...> [--field keys|entities|abstract|answers]`, and `--join "<value>"` to pull every card sharing a key or entity. **Sibling maps are probed together**: where the deployment pack registers sibling maps (see "Sibling maps" below), pass them all — `--map <dir1>,<dir2>,...` — and the probe searches every map in one pass, labelling each hit with the map it came from. A question is not answered from one map while a registered sibling that covers the same subject sits unprobed.
 6. **Traverse.** From any one hit, join outward: same key in other layers, same entity in other clusters, same cluster, adjacent dates. A faint-memory question needs only **one hook anywhere in the neighbourhood**; the joins do the rest.
-7. **Drill down only for exactness.** If the answer turns on exact wording, a precise time, or a figure the cards flag as uncertain, follow the card's Source pointer and fetch that one original, live. If a card's abstract records a correction or a conflict, the drill-down is mandatory before answering.
-8. **Abstain and fall back.** If the map yields nothing, say so, and fall back to exact-word grep over the originals in place, using the same expanded term family. Never invent an answer the map does not support; never smooth a conflict the cards preserve.
+7. **Drill down only for exactness.** If the answer turns on exact wording, a precise time, or a figure the cards flag as uncertain, or if the answer will be relied on in a filing, a decision or advice, follow the card's Source pointer and fetch that one original, live. If a card's abstract records a correction or a conflict, the drill-down is mandatory before answering.
+8. **Abstain and widen.** If the map yields nothing, say so: an empty result is not an answer. Search the originals with the expanded term family AND with terms taken directly from the question, without confining the search to the map's folders, clusters or keys. Never invent an answer the map does not support; never smooth a conflict the cards preserve. See "The map leads; it does not limit".
 9. **Answer in the asker's register.** For a lay asker, return a small candidate set described plainly, with the sibling distinctions spelled out — converting recall (produce the jargon) into recognition (pick from plain descriptions). For an expert asker, lead with keys and pointers.
 
 ### Change questions
 
 A question of the form "what changed about X?", "how has Y's position moved?", "is Z's case stronger than it was?" is answered from the **position & delta register first** — that is what it exists for. Procedure: resolve the holder and axis through the registry and frame; read the delta log for that pair in date order; state the current position, then the movements with their dates, directions and what moved (position, basis, or both), each with its source pointer; close with the trend reading if the log supports one. If the frame was never stipulated, or the axis is not in the frame, say so before answering — a delta reported without its frame is a number without a unit. If the register holds no record for the pair, abstain and fall back to the ordinary probe across dated cards, labelling the result as reconstructed-at-query-time rather than recorded.
+
+## The map leads; it does not limit
+
+The map decides where to look first. It never decides where not to look.
+
+| Map result | Status |
+|---|---|
+| Nothing found | Never conclusive. Run an independent search. |
+| A hit not yet checked in the original | A lead, not a finding. |
+| A hit confirmed in the original | Conclusive for that fact only. |
+| Anything a filing, a decision or advice will rely on | Search independently as well, whatever the map returned. |
+
+Rules:
+1. Independent searches use terms taken from the question and from the source documents themselves, not only the map's term family, house terms or thesaurus.
+2. Independent searches are not confined to the folders, clusters or keys the map points to.
+3. Anything newer than the last refresh is searched directly. Check the manifest date before relying on the map for recent material.
+4. Searches outside the store (court databases, the web, law reports) are never displaced by the map.
+5. When an answer rests on the map, say so and say which result row above applies.
 
 ## If a Shannon map already exists — adopt it, do not rebuild
 
@@ -155,6 +173,7 @@ Every search that succeeds through an unexpected word, and every correction from
 
 ## Version history
 
+- **v1.8 — 27 Nov 2026.** The map leads; it does not limit: a new section fixes the status of every map result — an empty result is never conclusive, a hit not yet checked in the original is a lead not a finding, a hit confirmed in the original is conclusive for that fact only, and anything a filing, a decision or advice will rely on is searched independently as well, whatever the map returned. Step 8 becomes "Abstain and widen": on an empty result, search the originals with the expanded term family AND with terms taken directly from the question, without confining the search to the map's folders, clusters or keys. Step 7's drill-down now also triggers when the answer will be relied on in a filing, a decision or advice.
 - **v1.7 — 24 Nov 2026.** Sibling maps: a deployment may hold a frame-specific or subject-specific map beside the general map — registered in the deployment pack, with its own cards, register axes and manifest — instead of forcing a new frame into the general map. Search probes the master and every registered sibling covering the subject in one pass (`map_query.py --map <dir1>,<dir2>`), hits labelled by map, shared cards never double-counted; registers stay separate, and a frame is promoted into the master only on the owner's direction, as a recorded promotion, not a merge.
 - **v1.6 — 24 Nov 2026.** Custody of the map: a copy of the map must be kept in the user's own custody, stated to the user explicitly as a standing rule of the method. Agent-machine (VM) storage as the map's only home is permitted only on the user's express choice, after the repercussions — loss, confidentiality, access — have been stated plainly; until that choice is recorded in the deployment pack, a run that leaves the only copy on the agent's machine is incomplete.
 - **v1.5 — 17 Nov 2026.** Shannon 3D: search mode gains a visual presentation option — on the trigger "Shannon 3d <subject>", the search traversal for that subject is rendered as an interactive 3D graph in a single HTML file (Obsidian-style: nodes joined by visible lines, every line one derived join typed by its shared value; click a node for its card abstract and Source pointer). The graph is a view over the map, never a store: it cards nothing, stores no edges, and inherits the map's freshness.
