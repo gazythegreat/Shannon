@@ -105,6 +105,29 @@ Rules for siblings:
 4. **Registers stay separate.** A sibling's position & delta register holds its own axes. The master's register is not edited by a sibling build; a frame that later proves general is promoted into the master only on the deployment owner's direction, as a recorded promotion, not a merge.
 5. **Case-local exports follow the map that covers the matter.** Where a sibling covers a subject, that subject's case-local export is re-exported from the sibling, and the export's manifest says which map it came from.
 
+## Frozen maps — changes and corrections take sibling form (added 28 Nov 2026)
+
+A map is **frozen** when the run that built it closes. From that moment, no procedure opens it for writing — not for a refresh, not for a correction, not even to mark a card superseded. Every subsequent change to what a map says takes the form of a **sibling map**, registered in the deployment pack like any sibling, whose manifest states:
+
+1. **Parent** — the map (or stack) it succeeds.
+2. **Reason** — one of: *refresh* (new or changed sources), *correction* (named cards are wrong, and why), or *frame* (a new frame over existing material; supersedes nothing). A sibling created for one reason does not silently do another's work.
+3. **Supersedes** — the parent cards it replaces, named individually; empty for a frame sibling.
+4. **Provenance and custody** — build date, building agent or run, and where its custody copy lives (the custody rule applies to siblings exactly as to any map).
+
+A refresh or correction sibling may be **thin**: it carries only the new and superseding cards, inheriting everything else from its parent by reference. It never copies a parent card it does not change.
+
+**The rule is recursive, and the stack is unbounded.** A sibling is itself a map: it freezes when the run that built it closes, and any change to a sibling takes a further sibling — there are no exceptions for depth, and **there is no limit to the number of siblings in a stack**. Thin siblings and the precedence rule below are what keep a long stack workable; the count itself is never capped.
+
+**Precedence.** Within a registered stack, the newest sibling governs every source it re-cards. A search hit on a superseded parent card is reported as superseded, with the superseding card named — never silently, and never double-counted. A frame sibling's cards stand beside the parent's and supersede none of them.
+
+**The stack is probed as a stack.** Probing a map that has registered descendants, without those descendants, is a method error: the parent alone will return superseded cards with nothing to say so. The pack registration is therefore load-bearing, and the probe tooling should warn when a map it was given has registered descendants it was not given.
+
+**Registers, atlases and manifests freeze with their map.** A position or delta arising after the freeze is recorded in the newest sibling's register, additively, as registers already work. A frozen map's manifest is never amended; a sibling that needs to say something about its parent says it in its own manifest.
+
+**Exports follow the stack.** A case-local or custody export of a stacked map states which siblings it draws from, and exports the current state — parent as superseded by its descendants — never a parent alone presented as current.
+
+This section retires the in-place superseded banner for frozen maps: supersession is recorded in the superseding sibling's manifest, and the superseded card stands in its parent exactly as carded.
+
 ## When no map is detected — the fallback
 
 Detection: look for the deployment's map at its configured location — atlas, cluster summaries and cards. Absent, empty or unreadable all count as **no map**; there is no partial credit. Then:
@@ -129,7 +152,7 @@ One card per source, fixed schema: Title / Source (pointer, relative to the stor
 A refresh never rebuilds. Procedure:
 
 1. **Detect the delta.** Compare the store's source sets against the build manifest: files that are new, and files whose size or modification time changed since they were carded. If the store is unreachable, stop, log the skip, and change nothing.
-2. **Card only the delta**, to the same card spec. New sources get new cards (appended as a dated refresh batch). For a changed source, write a NEW card and mark the old card "[Superseded — see refresh of <date>]" — corrections are additive; nothing is deleted or silently overwritten.
+2. **Card only the delta**, to the same card spec. New sources get new cards (appended as a dated refresh batch). For a changed source, write a NEW card and mark the old card "[Superseded — see refresh of <date>]" — corrections are additive; nothing is deleted or silently overwritten. **Frozen maps excepted:** where the map being refreshed is frozen (see "Frozen maps" above), the delta is carded as a refresh sibling instead — the frozen map is not opened for writing at all, and the supersession is recorded in the sibling's manifest.
 3. **Roll up only what the delta touched**: append a dated addendum to the affected cluster summaries; re-distil the atlas only when a cluster's posture or hardest deadline actually changed.
 4. **Update the manifest** with the new entries and watermarks, and log the run: sources added, sources re-carded, map size before and after. A run with no delta reports nothing.
 5. **Record the semantic deltas.** Where a deployment keeps a position & delta register (artefact 5), compare each newly carded source against the register's current positions for every holder and axis it touches. Where the source moves a position — or moves the evidential basis under an unmoved position — append a delta record (from → to, direction, what moved, date, pointer to the new card). Where the source's wording differs from a registered position but its basis does not, record nothing and note the rephrase in the run log only. A refresh that finds file deltas but no position deltas says so; the absence of movement is itself a reading, and the trend layer depends on stillness being recorded honestly rather than passed over.
@@ -175,6 +198,7 @@ Every search that succeeds through an unexpected word, and every correction from
 
 ## Version history
 
+- **v1.10 — 28 Nov 2026.** Frozen maps: a map freezes when the run that built it closes, and every later change — refresh, correction or new frame — takes the form of a sibling map whose manifest records its parent, its reason, and the parent cards it supersedes. The rule is recursive (a sibling freezes too, and its changes take a further sibling) and there is no limit to the number of siblings in a stack; a registered stack is probed as a stack, newest sibling governing the sources it re-cards. This retires the in-place superseded banner for frozen maps.
 - **v1.9 — 27 Nov 2026.** Finding the deployment pack: a pack is identified by its contents, not its name or location. The Deployment pack section now says where to look — where the owner's own notes or instructions point, then beside any map found by signature, then in the store root — and forbids assuming a file name, a path, or that a pack exists at all. If several are found, ask the owner which governs; if none is found, run unconfigured on the method's defaults, treat every frame line as PROPOSED, and say in the answer that no pack was found and where you looked.
 - **v1.8 — 27 Nov 2026.** The map leads; it does not limit: a new section fixes the status of every map result — an empty result is never conclusive, a hit not yet checked in the original is a lead not a finding, a hit confirmed in the original is conclusive for that fact only, and anything a filing, a decision or advice will rely on is searched independently as well, whatever the map returned. Step 8 becomes "Abstain and widen": on an empty result, search the originals with the expanded term family AND with terms taken directly from the question, without confining the search to the map's folders, clusters or keys. Step 7's drill-down now also triggers when the answer will be relied on in a filing, a decision or advice.
 - **v1.7 — 24 Nov 2026.** Sibling maps: a deployment may hold a frame-specific or subject-specific map beside the general map — registered in the deployment pack, with its own cards, register axes and manifest — instead of forcing a new frame into the general map. Search probes the master and every registered sibling covering the subject in one pass (`map_query.py --map <dir1>,<dir2>`), hits labelled by map, shared cards never double-counted; registers stay separate, and a frame is promoted into the master only on the owner's direction, as a recorded promotion, not a merge.

@@ -4,6 +4,30 @@ All notable changes to the Shannon skill, newest first. The same history is
 kept at the foot of SKILL.md; the repository's commit history is the
 line-by-line record.
 
+## v1.10 — 28 Nov 2026
+
+Frozen maps — changes and corrections take sibling form. A map is frozen
+when the run that built it closes; from that moment no procedure opens it
+for writing — not for a refresh, not for a correction, not even to mark a
+card superseded. Every subsequent change is a new sibling map whose
+manifest states its parent, its reason (refresh / correction / frame), the
+parent cards it supersedes (named individually; empty for a frame
+sibling), and its provenance and custody copy. Refresh and correction
+siblings may be thin — only the new and superseding cards, the rest
+inherited from the parent by reference.
+
+The rule is recursive and the stack is unbounded: a sibling is itself a
+map, freezes when its own build closes, and its changes take a further
+sibling; there is no limit to the number of siblings in a stack. Within a
+stack the newest sibling governs every source it re-cards, a hit on a
+superseded parent card is reported as superseded with the superseding card
+named, and probing a map without its registered descendants is a method
+error. Registers, atlases and manifests freeze with their map; exports
+follow the stack and state which siblings they draw from. For frozen maps
+this retires the in-place "[Superseded]" banner — supersession lives in
+the superseding sibling's manifest, and the superseded card stands in its
+parent exactly as carded.
+
 ## v1.9 — 27 Nov 2026
 
 Finding the deployment pack. Earlier versions described what a pack contains and assumed one would be there — the custody choice is recorded "in the deployment pack", siblings are registered "in the deployment pack", a map is looked for "in the location the deployment pack names" — without saying how a pack is found, or what to do when there is none. A pack's name, path and format belong to its owner and cannot be assumed.
